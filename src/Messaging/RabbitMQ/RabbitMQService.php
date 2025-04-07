@@ -25,9 +25,14 @@ class RabbitMQService implements RabbitMQPublisherInterface
         $this->channel = $this->connection->channel();
     }
 
-    public function publish(string $exchange, string $routingKey, array $data): void
+    public function publish(string $exchange, string $routingKey, array $data, ?string $queue = null): void
     {
         $this->channel->exchange_declare($exchange, 'direct', false, true, false);
+
+        if ($queue) {
+            $this->channel->queue_declare($queue, false, true, false, false);
+            $this->channel->queue_bind($queue, $exchange, $routingKey);
+        }
 
         $msg = new AMQPMessage(json_encode($data), [
             'delivery_mode' => 2
