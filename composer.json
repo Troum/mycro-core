@@ -1,0 +1,15 @@
+{
+  "name": "troum/marketplace-core",
+  "description": "Core for Marketplace microservices",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Marketplace\\Core\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.4",
+    "php-amqplib/php-amqplib": "^3.5"
+  },
+  "license": "MIT"
+}
