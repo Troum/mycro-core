@@ -2,9 +2,9 @@
 
 namespace Marketplace\Core\Contracts;
 
-use App\Exceptions\DtoHydrationException;
-use App\Exceptions\ReadonlyPropertyUpdateException;
 use Marketplace\Core\Attributes\DefaultValue;
+use Marketplace\Core\Exceptions\DtoHydrationException;
+use Marketplace\Core\Exceptions\ReadonlyPropertyUpdateException;
 use ReflectionClass;
 use ReflectionProperty;
 
