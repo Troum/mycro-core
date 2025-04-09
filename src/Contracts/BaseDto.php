@@ -20,6 +20,21 @@ abstract class BaseDto
     }
 
     /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $reflection = new ReflectionClass($this);
+        $result = [];
+
+        foreach ($reflection->getProperties(ReflectionProperty::IS_READONLY) as $property) {
+            $result[$property->getName()] = $property->getValue($this);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param array $data
      * @return void
      * @throws DtoHydrationException|ReadonlyPropertyUpdateException
