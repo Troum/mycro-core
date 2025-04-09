@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Attributes;
+namespace Marketplace\Core\Attributes;
 
 use Attribute;
 
