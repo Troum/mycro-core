@@ -1,6 +1,6 @@
 <?php
 
-namespace Marketplace\Core\Attributes;
+namespace Mycro\Core\Attributes;
 
 use Attribute;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Marketplace\Core\Messaging\RabbitMQ;
+namespace Mycro\Core\Messaging\RabbitMQ;
 
 interface RabbitMQPublisherInterface
 {

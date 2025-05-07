@@ -1,6 +1,6 @@
 <?php
 
-namespace Marketplace\Core\Logging;
+namespace Mycro\Core\Logging;
 
 use DateTimeImmutable;
 

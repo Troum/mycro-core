@@ -1,10 +1,10 @@
 <?php
 
-namespace Marketplace\Core\Contracts;
+namespace Mycro\Core\Contracts;
 
-use Marketplace\Core\Attributes\DefaultValue;
-use Marketplace\Core\Exceptions\DtoHydrationException;
-use Marketplace\Core\Exceptions\ReadonlyPropertyUpdateException;
+use Mycro\Core\Attributes\DefaultValue;
+use Mycro\Core\Exceptions\DtoHydrationException;
+use Mycro\Core\Exceptions\ReadonlyPropertyUpdateException;
 use ReflectionClass;
 use ReflectionProperty;
 

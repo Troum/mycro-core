@@ -1,9 +1,9 @@
 <?php
 
-namespace Marketplace\Core\Messaging\RabbitMQ;
+namespace Mycro\Core\Messaging\RabbitMQ;
 
 use Exception;
-use Marketplace\Core\Logging\CoreLoggerInterface;
+use Mycro\Core\Logging\CoreLoggerInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;

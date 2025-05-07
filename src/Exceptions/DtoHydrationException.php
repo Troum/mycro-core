@@ -1,6 +1,6 @@
 <?php
 
-namespace Marketplace\Core\Exceptions;
+namespace Mycro\Core\Exceptions;
 
 use Exception;
 
