@@ -1,10 +1,10 @@
 {
-  "name": "troum/marketplace-core",
-  "description": "Core for Marketplace microservices",
+  "name": "troum/mycro-core",
+  "description": "Core for microservices",
   "type": "library",
   "autoload": {
     "psr-4": {
-      "Marketplace\\Core\\": "src/"
+      "Mycro\\Core\\": "src/"
     }
   },
   "require": {
