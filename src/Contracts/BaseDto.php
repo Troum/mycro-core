@@ -2,6 +2,8 @@
 
 namespace Mycro\Core\Contracts;
 
+use Marketplace\Core\Contracts\PropertyMapperInterface;
+use Marketplace\Core\Services\DefaultPropertyMapper;
 use Mycro\Core\Attributes\DefaultValue;
 use Mycro\Core\Exceptions\DtoHydrationException;
 use Mycro\Core\Exceptions\ReadonlyPropertyUpdateException;
@@ -10,6 +12,28 @@ use ReflectionProperty;
 
 abstract class BaseDto
 {
+    /**
+     * @var PropertyMapperInterface|null
+     */
+    private static ?PropertyMapperInterface $propertyMapper = null;
+
+    /**
+     * @param PropertyMapperInterface $propertyMapper
+     * @return void
+     */
+    public static function setPropertyMapper(PropertyMapperInterface $propertyMapper): void
+    {
+        self::$propertyMapper = $propertyMapper;
+    }
+
+    /**
+     * @return DefaultPropertyMapper
+     */
+    protected static function propertyMapper(): DefaultPropertyMapper
+    {
+        return self::$propertyMapper ??= new DefaultPropertyMapper();
+    }
+
     /**
      * @throws ReadonlyPropertyUpdateException
      * @throws DtoHydrationException
@@ -41,6 +65,7 @@ abstract class BaseDto
      */
     private function hydrate(array $data): void
     {
+        $mapper = static::propertyMapper();
         $reflection = new ReflectionClass($this);
 
         foreach ($reflection->getProperties(ReflectionProperty::IS_READONLY) as $property) {
@@ -50,28 +75,13 @@ abstract class BaseDto
                 throw new ReadonlyPropertyUpdateException($name, static::class);
             }
 
-            if (array_key_exists($name, $data)) {
-                $value = $data[$name];
-            } else {
-                $defaultAttr = $this->getDefaultAttribute($property);
-                if ($defaultAttr !== null) {
-                    $value = $defaultAttr->value;
-                } else {
-                    throw new DtoHydrationException($name, static::class);
-                }
+            [$hasValue, $value] = $mapper->resolve($this, $property, $data);
+
+            if (!$hasValue) {
+                throw new DtoHydrationException($name, static::class);
             }
 
             $property->setValue($this, $value);
         }
-    }
-
-    /**
-     * @param ReflectionProperty $property
-     * @return DefaultValue|null
-     */
-    private function getDefaultAttribute(ReflectionProperty $property): ?DefaultValue
-    {
-        $attributes = $property->getAttributes(DefaultValue::class);
-        return count($attributes) > 0 ? $attributes[0]->newInstance() : null;
     }
 }
