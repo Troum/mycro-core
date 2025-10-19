@@ -1,6 +1,6 @@
 <?php
 
-namespace Marketplace\Core\Contracts;
+namespace Mycro\Core\Contracts;
 use ReflectionProperty;
 interface PropertyMapperInterface
 {

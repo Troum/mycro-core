@@ -2,8 +2,8 @@
 
 namespace Marketplace\Core\Services;
 
-use Marketplace\Core\Attributes\MapProperty;
-use Marketplace\Core\Contracts\PropertyMapperInterface;
+use Mycro\Core\Attributes\MapProperty;
+use Mycro\Core\Contracts\PropertyMapperInterface;
 use Mycro\Core\Attributes\DefaultValue;
 use ReflectionProperty;
 
