@@ -2,6 +2,8 @@
 
 namespace Mycro\Core\Contracts;
 
+use Exception;
+use Mycro\Core\Attributes\Transform;
 use Mycro\Core\Services\DefaultPropertyMapper;
 use Mycro\Core\Exceptions\DtoHydrationException;
 use Mycro\Core\Exceptions\ReadonlyPropertyUpdateException;
@@ -79,7 +81,40 @@ abstract class BaseDto
                 throw new DtoHydrationException($name, static::class);
             }
 
+            $value = $this->applyTransformerIfExists($property, $value);
+
             $property->setValue($this, $value);
         }
     }
+
+    /**
+     * @throws DtoHydrationException
+     * @throws Exception
+     */
+    protected function applyTransformerIfExists(ReflectionProperty $property, mixed $value): mixed
+    {
+        $attributes = $property->getAttributes(Transform::class);
+
+        if (empty($attributes)) {
+            return $value;
+        }
+
+        /** @var Transform $transformAttr */
+        $transformAttr = $attributes[0]->newInstance();
+
+        $transformerClass = $transformAttr->transformerClass;
+
+        if (!class_exists($transformerClass)) {
+            throw new Exception("Transformer class {$transformerClass} not found for property {$property->getName()}");
+        }
+
+        $transformer = new $transformerClass();
+
+        if (!$transformer instanceof TransformerContract) {
+            throw new Exception("Transformer {$transformerClass} must implement TransformerContract");
+        }
+
+        return $transformer->transform($value);
+    }
+
 }
