@@ -2,8 +2,7 @@
 
 namespace Mycro\Core\Contracts;
 
-use Marketplace\Core\Contracts\PropertyMapperInterface;
-use Marketplace\Core\Services\DefaultPropertyMapper;
+use Mycro\Core\Services\DefaultPropertyMapper;
 use Mycro\Core\Exceptions\DtoHydrationException;
 use Mycro\Core\Exceptions\ReadonlyPropertyUpdateException;
 use ReflectionClass;

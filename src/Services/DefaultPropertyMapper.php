@@ -1,6 +1,6 @@
 <?php
 
-namespace Marketplace\Core\Services;
+namespace Mycro\Core\Services;
 
 use Mycro\Core\Attributes\MapProperty;
 use Mycro\Core\Contracts\PropertyMapperInterface;
