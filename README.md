@@ -17,7 +17,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/Troum/marketplace-core.git"
+      "url": "https://github.com/Troum/mycro-core.git"
     }
   ],
   "require": {
