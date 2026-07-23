@@ -1,8 +1,25 @@
 {
   "name": "troum/mycro-core",
-  "version": "1.1.3",
-  "description": "Core for microservices",
+  "description": "Core library for marketplace microservices: typed DTOs, RabbitMQ integration, logging",
   "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "dto",
+    "rabbitmq",
+    "microservices",
+    "hydration",
+    "messaging"
+  ],
+  "authors": [
+    {
+      "name": "Ruslan Belchenkov",
+      "email": "troum@outlook.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/Troum/mycro-core/issues",
+    "source": "https://github.com/Troum/mycro-core"
+  },
   "autoload": {
     "psr-4": {
       "Mycro\\Core\\": "src/"
@@ -11,6 +28,5 @@
   "require": {
     "php": "^8.4",
     "php-amqplib/php-amqplib": "^3.5"
-  },
-  "license": "MIT"
+  }
 }

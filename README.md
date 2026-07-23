@@ -10,27 +10,13 @@
 
 ## Установка
 
-Добавьте VCS-репозиторий и зависимость в `composer.json` сервиса:
-
-```json
-{
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/Troum/mycro-core.git"
-    }
-  ],
-  "require": {
-    "troum/mycro-core": "^1.1"
-  }
-}
-```
+Пакет доступен на [Packagist](https://packagist.org/packages/troum/mycro-core):
 
 ```bash
 composer require troum/mycro-core
 ```
 
-Версии пакета отмечаются git-тегами (`v1.1.0`, `v1.1.2` и т.д.). Укажите нужный тег в constraint или зафиксируйте версию:
+Рекомендуемый constraint — `^1.1`. Версии отмечаются git-тегами (`v1.1.0`, `v1.1.3` и т.д.):
 
 ```bash
 composer require troum/mycro-core:1.1.3
