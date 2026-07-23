@@ -1,6 +1,6 @@
 # troum/mycro-core
 
-Общая PHP-библиотека для микросервисов marketplace: типизированные DTO с гидратацией из массивов, интеграция с RabbitMQ и простой файловый логгер.
+Общая PHP-библиотека для микросервисов: типизированные DTO с гидратацией из массивов, интеграция с RabbitMQ и простой файловый логгер.
 
 **Требования:** PHP ^8.4, [php-amqplib/php-amqplib](https://github.com/php-amqplib/php-amqplib) ^3.5
 
@@ -234,12 +234,6 @@ src/
 ├── Messaging/RabbitMQ/
 └── Services/            # DefaultPropertyMapper
 ```
-
----
-
-## Миграция с `troum/marketplace-core`
-
-Ранние версии публиковались как `troum/marketplace-core` с пространством имён `Marketplace\Core\`. Текущий пакет — `troum/mycro-core`, namespace `Mycro\Core\`. При обновлении замените `use`-импорты и constraint в `composer.json`.
 
 ---
 
