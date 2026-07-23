@@ -251,12 +251,6 @@ src/
 
 ---
 
-## Миграция с `troum/marketplace-core`
-
-Ранние версии публиковались как `troum/marketplace-core` с пространством имён `Marketplace\Core\`. Текущий пакет — `troum/mycro-core`, namespace `Mycro\Core\`. При обновлении замените `use`-импорты и constraint в `composer.json`.
-
----
-
 ## Лицензия
 
 MIT
