@@ -55,7 +55,7 @@ $array = $dto->toArray();
 ### Правила гидратации
 
 1. Обрабатываются только свойства с модификатором `readonly`.
-2. Ключи входного массива приводятся к `snake_case` (`firstName`, `first-name`, `first_name` → `first_name`). Вложенные массивы нормализуются рекурсивно.
+2. Ключи входного массива приводятся к `snake_case` (`firstName`, `first-name`, `first_name` → `first_name`). Нормализуется **только верхний уровень** — вложенные массивы передаются в свойство как есть, вместе с исходными ключами.
 3. Если значение не найдено и нет атрибута `DefaultValue` / необязательного `MapProperty`, выбрасывается `DtoHydrationException`.
 4. Повторная инициализация уже заданного readonly-свойства запрещена (`ReadonlyPropertyUpdateException`).
 
@@ -116,6 +116,54 @@ final class CreateUserDto extends BaseDto
 }
 ```
 
+### Частичное обновление: `wasProvided()` и `providedAttributes()`
+
+`toArray()` возвращает **все** readonly-свойства, включая значения из `DefaultValue` и `null` от `required: false`. Для `PATCH`-запросов этого недостаточно: непонятно, что клиент прислал, а что подставила библиотека.
+
+DTO запоминает, ключи каких свойств действительно присутствовали во входном массиве:
+
+```php
+public function wasProvided(string $property): bool;
+
+/** @return array<string, mixed> */
+public function providedAttributes(): array;
+```
+
+- явный `null` считается переданным значением — поле можно очистить;
+- значение из `#[DefaultValue]` или `#[MapProperty(required: false)]` переданным **не** считается — оно не перезапишет данные в БД;
+- свойство, найденное по алиасу `#[MapProperty(from: 'other_name')]`, попадает в результат под именем свойства, а не алиаса;
+- значения — уже после `#[Transform]`, как и в `toArray()`.
+
+```php
+final class UpdateMailingDto extends BaseDto
+{
+    #[DefaultValue('')]
+    public readonly string $subject;
+
+    #[MapProperty(from: 'reply_to', required: false)]
+    public readonly ?string $reply_to_email;
+}
+
+$dto = new UpdateMailingDto(['reply_to' => null]);
+
+$dto->wasProvided('subject');        // false — ключ не передан
+$dto->wasProvided('reply_to_email'); // true  — передан явный null
+
+$dto->toArray();
+// ['subject' => '', 'reply_to_email' => null]
+
+$dto->providedAttributes();
+// ['reply_to_email' => null]
+```
+
+Для частичного обновления используйте `providedAttributes()` вместо `array_filter($dto->toArray(), fn ($v) => $v !== null)`:
+
+```php
+$mailing->update($dto->providedAttributes());
+```
+
+Для создания записи по-прежнему нужен `toArray()` — там значения по умолчанию как раз необходимы.
+
 ### Кастомный PropertyMapper
 
 По умолчанию используется `DefaultPropertyMapper`. Свой маппер подключается глобально для всех DTO:
@@ -127,7 +175,24 @@ use Mycro\Core\Contracts\PropertyMapperInterface;
 BaseDto::setPropertyMapper(new MyCustomPropertyMapper());
 ```
 
-Интерфейс `PropertyMapperInterface::resolve()` возвращает кортеж `[bool $hasValue, mixed $value]`.
+Интерфейс `PropertyMapperInterface::resolve()` возвращает кортеж `[bool $hasValue, mixed $value, bool $fromInput]`.
+
+Третий элемент — позиционный и необязательный: маппер, возвращающий два элемента, продолжает работать, но `wasProvided()` и `providedAttributes()` для его DTO всегда будут пустыми. Возвращайте `true` только тогда, когда значение действительно взято из входного массива:
+
+```php
+public function resolve(object $dto, ReflectionProperty $property, array $data): array
+{
+    $name = $property->getName();
+
+    if (array_key_exists($name, $data)) {
+        return [true, $data[$name], true];  // из входных данных
+    }
+
+    return [true, null, false];             // подставлено маппером
+}
+```
+
+Проверяйте наличие ключа через `array_key_exists()`, а не `isset()` — иначе явный `null` не будет считаться переданным.
 
 ---
 
@@ -233,6 +298,19 @@ src/
 ├── Logging/
 ├── Messaging/RabbitMQ/
 └── Services/            # DefaultPropertyMapper
+
+tests/
+├── Dto/                 # гидратация, частичное обновление, нормализация ключей
+└── Fixtures/
+```
+
+---
+
+## Тесты
+
+```bash
+composer install
+composer test
 ```
 
 ---

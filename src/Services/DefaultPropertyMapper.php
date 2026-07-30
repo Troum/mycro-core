@@ -27,25 +27,25 @@ class DefaultPropertyMapper implements PropertyMapperInterface
         foreach ($aliases as $alias) {
             $alias = $this->toSnakeCase($alias);
             if (array_key_exists($alias, $normalizedData)) {
-                return [true, $normalizedData[$alias]];
+                return [true, $normalizedData[$alias], true];
             }
         }
 
         if (array_key_exists($name, $normalizedData)) {
-            return [true, $normalizedData[$name]];
+            return [true, $normalizedData[$name], true];
         }
 
         $defaultAttribute = $this->getAttribute($property, DefaultValue::class);
 
         if ($defaultAttribute !== null) {
-            return [true, $defaultAttribute->value];
+            return [true, $defaultAttribute->value, false];
         }
 
         if ($mapAttribute && $mapAttribute->required === false) {
-            return [true, null];
+            return [true, null, false];
         }
 
-        return [false, null];
+        return [false, null, false];
     }
 
     /**
@@ -70,6 +70,10 @@ class DefaultPropertyMapper implements PropertyMapperInterface
     }
 
     /**
+     * Нормализуется только верхний уровень: только он сопоставляется с именами
+     * свойств. Всё, что глубже, — произвольный payload, ключи которого переписывать
+     * нельзя. Вложенные DTO нормализуют свой вход сами.
+     *
      * @param array $data
      * @return array
      */
@@ -78,10 +82,7 @@ class DefaultPropertyMapper implements PropertyMapperInterface
         $normalized = [];
 
         foreach ($data as $key => $value) {
-            $newKey = $this->toSnakeCase($key);
-            $normalized[$newKey] = is_array($value)
-                ? $this->normalizeArrayKeys($value)
-                : $value;
+            $normalized[$this->toSnakeCase((string) $key)] = $value;
         }
 
         return $normalized;
